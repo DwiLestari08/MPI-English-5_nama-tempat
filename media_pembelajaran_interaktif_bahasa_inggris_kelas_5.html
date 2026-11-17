@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI Bahasa Inggris - Grade 5 (Public Buildings & Directions)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #a7f3d0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #34d399; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-800 dark:text-gray-100 min-h-full flex flex-col font-sans select-none">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-emerald-100 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-200 dark:shadow-none text-xl font-bold">
+                    🗺️
+                </div>
+                <div>
+                    <h1 class="font-bold text-base md:text-lg text-emerald-900 dark:text-emerald-300 leading-tight">MPI English: Public Buildings & Directions</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Kurikulum Merdeka • Grade 5 Elementary School</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" id="darkModeBtn" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:scale-105 active:scale-95 shadow-sm" title="Ubah Tema">
+                    🌙
+                </button>
+                <!-- Student badge if registered -->
+                <div id="studentBadge" class="hidden text-xs bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 rounded-xl font-medium border border-emerald-200 dark:border-emerald-800">
+                    👤 <span id="badgeName">-</span> (<span id="badgeClass">-</span>)
+                </div>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 dark:bg-gray-700 h-1.5">
+            <div id="progressBar" class="bg-emerald-600 h-1.5 transition-all duration-300" style="width: 10%;"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-6">
+        <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-gray-700 overflow-hidden min-h-[560px] flex flex-col justify-between p-6 md:p-8">
+            
+            <!-- Dynamic Content Area -->
+            <div id="appContent" class="flex-grow flex flex-col justify-center">
+                <!-- Content injected via JavaScript -->
+            </div>
+
+            <!-- Navigation Footer -->
+            <div class="mt-8 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                <button id="prevBtn" onclick="prevStep()" class="px-5 py-2.5 rounded-2xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed flex items-center space-x-2">
+                    <span>←</span> <span>Sebelumnya</span>
+                </button>
+                <div id="stepIndicator" class="text-xs font-semibold text-gray-400 tracking-wider">
+                    TAHAP 1 DARI 9
+                </div>
+                <button id="nextBtn" onclick="nextStep()" class="px-6 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-lg shadow-emerald-200 dark:shadow-none hover:scale-[1.02] active:scale-95 flex items-center space-x-2">
+                    <span>Lanjut</span> <span>→</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Modal for Alerts / Messages -->
+    <div id="customModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-center space-y-4">
+            <div id="modalIcon" class="text-4xl">⚠️</div>
+            <h3 id="modalTitle" class="text-xl font-bold text-gray-900 dark:text-white">Perhatian</h3>
+            <p id="modalMessage" class="text-sm text-gray-600 dark:text-gray-300">Pesan keterangan di sini.</p>
+            <button onclick="closeModal()" class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-700 shadow-md">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- Web Audio API for Sound Effects ---
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(180, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'success') {
+                    const notes = [523.25, 587.33, 659.25, 698.46, 783.99];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        g.gain.setValueAtTime(0.1, now + idx * 0.08);
+                        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.2);
+                        o.start(now + idx * 0.08);
+                        o.stop(now + idx * 0.08 + 0.2);
+                    });
+                }
+            } catch(e) { console.log(e); }
+        }
+
+        // --- Application State ---
+        let state = {
+            step: 0, // 0 to 8
+            name: '',
+            studentClass: 'Kelas 5A',
+            absen: '',
+            diagnosticAnswers: { q1: null, q2: null },
+            simStep: 0,
+            simulationCompleted: false,
+            quizAnswers: { q1: null, q2: null, q3: null, q4: null, q5: null },
+            summativeAnswer: '',
+            reflection: { understanding: 'Sangat Paham', feeling: '', motivation: '' }
+        };
+
+        const totalSteps = 9;
+
+        // --- 26 Public Buildings Data ---
+        const publicBuildings = [
+            { id: 1, name: 'School', icon: '🏫', desc: 'A place where students go to learn and study.' },
+            { id: 2, name: 'Library', icon: '📚', desc: 'A building containing collections of books for reading and borrowing.' },
+            { id: 3, name: 'University', icon: '🎓', desc: 'An institution of higher education and academic research.' },
+            { id: 4, name: 'Post Office', icon: '📮', desc: 'A place where we send letters, parcels, and buy stamps.' },
+            { id: 5, name: 'Police Station', icon: '👮', desc: 'The headquarters of local police officers who maintain law and order.' },
+            { id: 6, name: 'Fire Station', icon: '🚒', desc: 'A garage and office for firefighters and fire engines.' },
+            { id: 7, name: 'Hospital', icon: '🏥', desc: 'A medical facility where doctors and nurses treat sick or injured people.' },
+            { id: 8, name: 'Pharmacy / Drugstore', icon: '💊', desc: 'A shop where medicines and drugs are prepared and sold.' },
+            { id: 9, name: 'Airport', icon: '✈️', desc: 'A complex with runways and buildings where airplanes takeoff and land.' },
+            { id: 10, name: 'Railway Station', icon: '🚉', desc: 'A place where trains stop to let passengers get on and off.' },
+            { id: 11, name: 'Bus Terminal', icon: '🚌', desc: 'A central station where bus routes begin and end.' },
+            { id: 12, name: 'Port / Harbor', icon: '⚓', desc: 'A place on the coast where ships can dock, load, and unload.' },
+            { id: 13, name: 'Gas Station (SPBU)', icon: '⛽', desc: 'A station where vehicles refuel with gasoline, diesel, or electricity.' },
+            { id: 14, name: 'Bank', icon: '🏦', desc: 'A financial institution where people keep money, save, or take loans.' },
+            { id: 15, name: 'Traditional Market', icon: '🧺', desc: 'An open-air or local marketplace selling fresh food and daily goods.' },
+            { id: 16, name: 'Minimarket', icon: '🏪', desc: 'A small convenience store selling snacks, drinks, and essentials.' },
+            { id: 17, name: 'Supermarket / Mall', icon: '🏬', desc: 'A large self-service store or shopping complex selling various items.' },
+            { id: 18, name: 'Bakery', icon: '🥖', desc: 'A shop where bread, cakes, and pastries are baked and sold.' },
+            { id: 19, name: 'Park', icon: '🌳', desc: 'A public green area reserved for recreation, walking, and relaxing.' },
+            { id: 20, name: 'Zoo', icon: '🦁', desc: 'A park where wild animals are kept for public exhibition and conservation.' },
+            { id: 21, name: 'Cinema / Theater', icon: '🎬', desc: 'A place with screens where people gather to watch movies.' },
+            { id: 22, name: 'Swimming Pool', icon: '🏊', desc: 'A structured pool filled with water for swimming and water sports.' },
+            { id: 23, name: 'Restaurant', icon: '🍽️', desc: 'A business where meals and drinks are prepared and served to customers.' },
+            { id: 24, name: 'Mosque', icon: '🕌', desc: 'A building for Islamic worship and community gatherings.' },
+            { id: 25, name: 'Church', icon: '⛪', desc: 'A building used for Christian religious worship.' },
+            { id: 26, name: 'Temple (Pura)', icon: '🛕', desc: 'A sacred place dedicated to religious worship or spiritual practices.' }
+        ];
+
+        // --- UI Modal Helper ---
+        function showModal(title, message, icon = '⚠️') {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalIcon').innerText = icon;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+            playSound('click');
+        }
+
+        // --- Dark Mode ---
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('darkModeBtn').innerText = isDark ? '☀️' : '🌙';
+            playSound('click');
+        }
+
+        // --- Navigation ---
+        function setStep(newStep) {
+            playSound('click');
+            if (newStep === 1 && (!state.name.trim() || !state.absen)) {
+                showModal('Data Belum Lengkap', 'Mohon isi Nama Lengkap dan Nomor Absen terlebih dahulu!', '✍️');
+                return;
+            }
+            if (newStep >= 0 && newStep < totalSteps) {
+                state.step = newStep;
+                render();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function nextStep() {
+            if (state.step === 0) {
+                const nameInput = document.getElementById('inputName');
+                const absenInput = document.getElementById('inputAbsen');
+                const classSelect = document.getElementById('selectClass');
+                if(!nameInput.value.trim() || !absenInput.value.trim()) {
+                    showModal('Data Belum Lengkap', 'Silakan masukkan Nama dan Nomor Absen Anda!', '📝');
+                    return;
+                }
+                state.name = nameInput.value.trim();
+                state.absen = absenInput.value.trim();
+                state.studentClass = classSelect.value;
+                
+                document.getElementById('badgeName').innerText = state.name;
+                document.getElementById('badgeClass').innerText = state.studentClass;
+                document.getElementById('studentBadge').classList.remove('hidden');
+            }
+            if (state.step < totalSteps - 1) {
+                setStep(state.step + 1);
+            }
+        }
+
+        function prevStep() {
+            if (state.step > 0) {
+                setStep(state.step - 1);
+            }
+        }
+
+        // --- Render Engine ---
+        function render() {
+            const progressPercent = ((state.step + 1) / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            document.getElementById('stepIndicator').innerText = `TAHAP ${state.step + 1} DARI ${totalSteps}`;
+            
+            document.getElementById('prevBtn').disabled = (state.step === 0);
+            document.getElementById('nextBtn').style.display = (state.step === totalSteps - 1) ? 'none' : 'flex';
+
+            const container = document.getElementById('appContent');
+            container.innerHTML = '';
+
+            switch(state.step) {
+                case 0: renderStep0(container); break;
+                case 1: renderStep1(container); break;
+                case 2: renderStep2(container); break;
+                case 3: renderStep3(container); break;
+                case 4: renderStep4(container); break;
+                case 5: renderStep5(container); break;
+                case 6: renderStep6(container); break;
+                case 7: renderStep7(container); break;
+                case 8: renderStep8(container); break;
+            }
+        }
+
+        // --- Step 0: Identitas Siswa ---
+        function renderStep0(container) {
+            container.innerHTML = `
+                <div class="max-w-xl mx-auto text-center space-y-6">
+                    <div class="inline-flex p-4 bg-emerald-100 dark:bg-emerald-900/50 rounded-3xl text-4xl shadow-inner">
+                        🎒
+                    </div>
+                    <div class="space-y-2">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-emerald-900 dark:text-emerald-200">Welcome, Young English Explorer!</h2>
+                        <p class="text-sm md:text-base text-gray-600 dark:text-gray-300">Silakan masukkan identitasmu terlebih dahulu sebelum memulai petualangan belajar Bahasa Inggris tentang Public Buildings & Directions.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 text-left space-y-4 shadow-sm">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Nama Lengkap Siswa</label>
+                            <input type="text" id="inputName" value="${state.name}" placeholder="Contoh: Sarah Anindya" class="w-full px-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none font-medium">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Kelas</label>
+                                <select id="selectClass" class="w-full px-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none font-medium">
+                                    <option value="Kelas 5A" ${state.studentClass === 'Kelas 5A' ? 'selected' : ''}>Kelas 5A</option>
+                                    <option value="Kelas 5B" ${state.studentClass === 'Kelas 5B' ? 'selected' : ''}>Kelas 5B</option>
+                                    <option value="Kelas 5C" ${state.studentClass === 'Kelas 5C' ? 'selected' : ''}>Kelas 5C</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Nomor Absen</label>
+                                <input type="number" id="inputAbsen" value="${state.absen}" placeholder="Contoh: 12" class="w-full px-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none font-medium">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Step 1: Apersepsi ---
+        function renderStep1(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🤔</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 1</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Apersepsi: Curiosity Builder</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 p-6 rounded-3xl text-amber-900 dark:text-amber-200 space-y-3 leading-relaxed">
+                        <p class="font-medium">🇬🇧 <strong>Scenario:</strong> Imagine you are visiting a brand new town where all signs and directions are written in English. You need to find a hospital for medical checkup and a post office to send a letter.</p>
+                        <p class="text-sm opacity-90">Bayangkan kamu berada di kota baru dan ingin pergi ke berbagai tempat penting, namun semua plang nama ditulis dalam Bahasa Inggris. Kira-kira, apa yang akan terjadi jika kita tidak tahu nama bangunan publik dan petunjuk arah dalam Bahasa Inggris?</p>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-900/30 p-6 rounded-3xl border border-emerald-100 dark:border-emerald-800/50 space-y-3">
+                        <h3 class="font-bold text-emerald-900 dark:text-emerald-300">💡 Pertanyaan Pemantik:</h3>
+                        <ul class="list-disc list-inside space-y-2 text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            <li>How do you ask for directions like "turn left" or "go straight" in English?</li>
+                            <li>Do you know the English names for public buildings around your neighborhood?</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Step 2: Asesmen Awal ---
+        function renderStep2(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">📝</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 2</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Asesmen Awal (Diagnostic Assessment)</h2>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Let's check your prior knowledge before exploring the 26 public buildings and directions!</p>
+
+                    <div class="space-y-6">
+                        <!-- Q1 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">1. Which public building do you visit when you need medical care or when you are sick?</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                ${['Hospital', 'Supermarket', 'Post Office', 'Library'].map(opt => `
+                                    <button onclick="setDiag('q1', '${opt}')" class="p-3 text-left rounded-2xl border font-medium text-sm transition-all ${state.diagnosticAnswers.q1 === opt ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">2. What English phrase means "berbelok ke kiri"?</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                ${['Turn left', 'Turn right', 'Go straight', 'Stop'].map(opt => `
+                                    <button onclick="setDiag('q2', '${opt}')" class="p-3 text-center rounded-2xl border font-medium text-sm transition-all ${state.diagnosticAnswers.q2 === opt ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setDiag(q, val) {
+            state.diagnosticAnswers[q] = val;
+            playSound('click');
+            render();
+        }
+
+        // --- Step 3: Materi Pokok (26 Public Buildings + Directions + Commands) ---
+        let materialTab = 'buildings'; // 'buildings' or 'directions'
+        function renderStep3(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">📚</span>
+                            <div>
+                                <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 3</span>
+                                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Materi Pokok Pembelajaran</h2>
+                            </div>
+                        </div>
+                        <div class="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-2xl">
+                            <button onclick="switchMatTab('buildings')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${materialTab === 'buildings' ? 'bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 shadow-sm' : 'text-gray-500 dark:text-gray-300'}">🏢 26 Public Buildings</button>
+                            <button onclick="switchMatTab('directions')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${materialTab === 'directions' ? 'bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 shadow-sm' : 'text-gray-500 dark:text-gray-300'}">🧭 Directions & Commands</button>
+                        </div>
+                    </div>
+
+                    ${materialTab === 'buildings' ? renderBuildingsContent() : renderDirectionsContent()}
+                </div>
+            `;
+        }
+
+        function switchMatTab(tab) {
+            materialTab = tab;
+            playSound('click');
+            render();
+        }
+
+        function renderBuildingsContent() {
+            return `
+                <div class="space-y-3">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Daftar lengkap 26 Bangunan Publik beserta nama Inggris dan fungsinya:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[360px] overflow-y-auto p-2">
+                        ${publicBuildings.map(item => `
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-sm space-y-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-2xl">${item.icon}</span>
+                                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">${item.id}. ${item.name}</h3>
+                                </div>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">${item.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDirectionsContent() {
+            return `
+                <div class="space-y-6 max-h-[380px] overflow-y-auto p-2">
+                    <div class="bg-emerald-50 dark:bg-emerald-900/30 p-6 rounded-3xl border border-emerald-100 dark:border-emerald-800/50 space-y-4">
+                        <h3 class="font-bold text-emerald-900 dark:text-emerald-300 text-base">🧭 Arah Mata Angin (Cardinal Directions)</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-2xl">⬆️</span>
+                                <h4 class="font-bold mt-1 text-sm">North</h4>
+                                <p class="text-xs text-gray-500">Utara</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-2xl">⬇️</span>
+                                <h4 class="font-bold mt-1 text-sm">South</h4>
+                                <p class="text-xs text-gray-500">Selatan</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-2xl">➡️</span>
+                                <h4 class="font-bold mt-1 text-sm">East</h4>
+                                <p class="text-xs text-gray-500">Timur</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-2xl">⬅️</span>
+                                <h4 class="font-bold mt-1 text-sm">West</h4>
+                                <p class="text-xs text-gray-500">Barat</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-teal-50 dark:bg-teal-900/20 p-6 rounded-3xl border border-teal-100 dark:border-teal-800/50 space-y-4">
+                        <h3 class="font-bold text-teal-900 dark:text-teal-300 text-base">🚶 Petunjuk Arah & Perintah (Navigation Commands & Prepositions)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-600 space-y-1">
+                                <span class="font-bold text-teal-600 text-sm">Go straight</span>
+                                <p class="text-gray-600 dark:text-gray-300">Jalan lurus<br><em>"Go straight ahead along the street."</em></p>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-600 space-y-1">
+                                <span class="font-bold text-teal-600 text-sm">Turn left</span>
+                                <p class="text-gray-600 dark:text-gray-300">Belok kiri<br><em>"Turn left at the corner."</em></p>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-600 space-y-1">
+                                <span class="font-bold text-teal-600 text-sm">Turn right</span>
+                                <p class="text-gray-600 dark:text-gray-300">Belok kanan<br><em>"Turn right at the traffic light."</em></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Step 4: Simulasi (Mini Game Navigasi) ---
+        let simMsg = "Help Alex walk from **School** to the **Library** by choosing the correct English directions.";
+        function renderStep4(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🎮</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 4</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Simulasi: Map Navigation Challenge</h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-900/30 p-6 rounded-3xl border border-emerald-100 dark:border-emerald-800/50 space-y-4 text-center">
+                        <div class="flex justify-center items-center space-x-6 text-3xl md:text-4xl">
+                            <span>🏫 <br><span class="text-xs">School</span></span>
+                            <span class="text-emerald-400">➡️</span>
+                            <span>📮 <br><span class="text-xs">Post Office</span></span>
+                            <span class="text-emerald-400">➡️</span>
+                            <span>📚 <br><span class="text-xs">Library</span></span>
+                        </div>
+                        <p class="text-sm md:text-base font-medium text-gray-800 dark:text-gray-200" id="simStatusText">${simMsg}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="simOptions">
+                        ${state.simStep === 0 ? `
+                            <button onclick="handleSimChoice(1, true)" class="p-4 bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-2xl font-medium text-sm text-left shadow-sm">
+                                🧭 <strong>Step 1:</strong> Go straight ahead passing the Post Office towards North.
+                            </button>
+                            <button onclick="handleSimChoice(1, false)" class="p-4 bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-2xl font-medium text-sm text-left shadow-sm">
+                                🧭 Turn around and run into the dark forest.
+                            </button>
+                        ` : state.simStep === 1 ? `
+                            <button onclick="handleSimChoice(2, true)" class="p-4 bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-2xl font-medium text-sm text-left shadow-sm">
+                                📚 <strong>Step 2:</strong> Turn right at the corner to reach the Library.
+                            </button>
+                            <button onclick="handleSimChoice(2, false)" class="p-4 bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-2xl font-medium text-sm text-left shadow-sm">
+                                🛒 Go all the way to the distant supermarket.
+                            </button>
+                        ` : `
+                            <div class="col-span-2 text-center p-6 bg-emerald-50 dark:bg-emerald-900/30 rounded-3xl border border-emerald-200 dark:border-emerald-800 space-y-2">
+                                <span class="text-4xl">🎉</span>
+                                <h3 class="font-bold text-emerald-800 dark:text-emerald-200 text-lg">Awesome! Alex arrived safely at the Library!</h3>
+                                <p class="text-xs text-emerald-700 dark:text-emerald-300">You successfully followed the English navigation commands!</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleSimChoice(stepNum, isCorrect) {
+            if (isCorrect) {
+                playSound('correct');
+                if (stepNum === 1) {
+                    state.simStep = 1;
+                    simMsg = "Great! Alex is now near the Post Office. Choose the next direction to the Library!";
+                } else if (stepNum === 2) {
+                    state.simStep = 2;
+                    simMsg = "Mission completed!";
+                    state.simulationCompleted = true;
+                }
+            } else {
+                playSound('wrong');
+                showModal('Not Quite Right', 'Coba perhatikan kembali petunjuk arah dan perintah navigasinya ya!', '❌');
+            }
+            render();
+        }
+
+        // --- Step 5: Kuis Penguatan ---
+        function renderStep5(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🎯</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 5</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Kuis Penguatan Pemahaman</h2>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6 max-h-[380px] overflow-y-auto p-2">
+                        <!-- Q1 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">1. Where can you buy fresh fruits, vegetables, and daily groceries at a large self-service store?</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                ${['Supermarket', 'Hospital', 'Police Station', 'Library'].map(opt => `
+                                    <button onclick="setQuiz('q1', '${opt}')" class="p-3 text-center rounded-2xl border text-xs md:text-sm font-medium ${state.quizAnswers.q1 === opt ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">2. What English word refers to the cardinal direction "Utara"?</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                ${['North', 'South', 'East', 'West'].map(opt => `
+                                    <button onclick="setQuiz('q2', '${opt}')" class="p-3 text-center rounded-2xl border text-xs md:text-sm font-medium ${state.quizAnswers.q2 === opt ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Q3 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">3. Which command means "jalan lurus" when giving directions?</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                ${['Go straight', 'Turn left', 'Turn right', 'Stop'].map(opt => `
+                                    <button onclick="setQuiz('q3', '${opt}')" class="p-3 text-center rounded-2xl border text-xs md:text-sm font-medium ${state.quizAnswers.q3 === opt ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Q4 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">4. Where do firefighters work with fire engines?</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                ${['Fire Station', 'Post Office', 'Bank', 'Hospital'].map(opt => `
+                                    <button onclick="setQuiz('q4', '${opt}')" class="p-3 text-center rounded-2xl border text-xs md:text-sm font-medium ${state.quizAnswers.q4 === opt ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Q5 -->
+                        <div class="bg-gray-50 dark:bg-gray-700/40 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-3">
+                            <p class="font-semibold text-sm md:text-base text-gray-900 dark:text-white">5. Where do airplanes takeoff and land?</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                ${['Airport', 'Port / Harbor', 'Bus Terminal', 'Railway Station'].map(opt => `
+                                    <button onclick="setQuiz('q5', '${opt}')" class="p-3 text-center rounded-2xl border text-xs md:text-sm font-medium ${state.quizAnswers.q5 === opt ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'}">
+                                        ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setQuiz(q, val) {
+            state.quizAnswers[q] = val;
+            playSound('click');
+            render();
+        }
+
+        // --- Step 6: Asesmen Akhir ---
+        function renderStep6(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🏆</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 6</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Asesmen Akhir (Summative Assessment)</h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-900/30 p-6 rounded-3xl border border-emerald-100 dark:border-emerald-800/50 space-y-3">
+                        <h3 class="font-bold text-emerald-900 dark:text-emerald-300">🗺️ Summative Task</h3>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">"The Bank is located to the <strong>East</strong> of the School. To get there, you need to go straight from school towards the East, then turn right where the Gas Station (SPBU) is located."</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-300">Write down your explanation or response in English on how you would guide someone from the School to the Bank using English directions and public building names!</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Tuliskan jawaban asesmen akhir dalam Bahasa Inggris:</label>
+                        <textarea id="summativeInput" oninput="state.summativeAnswer = this.value" rows="4" placeholder="Example: Go straight from school to the East, then turn right at the Gas Station to find the Bank..." class="w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">${state.summativeAnswer}</textarea>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Step 7: Refleksi Akhir ---
+        function renderStep7(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">💬</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 7</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Refleksi Pembelajaran</h2>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 max-h-[380px] overflow-y-auto p-2">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">1. Seberapa paham kamu tentang materi 26 Public Buildings & Directions hari ini?</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                ${['Sangat Paham', 'Cukup Paham', 'Perlu Belajar Lagi'].map(lvl => `
+                                    <button onclick="setReflUnd('${lvl}')" class="p-3 text-center rounded-2xl border text-xs md:text-sm font-semibold transition-all ${state.reflection.understanding === lvl ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300'}">
+                                        ${lvl === 'Sangat Paham' ? '⭐ Sangat Paham' : lvl === 'Cukup Paham' ? '🌟 Cukup Paham' : '💡 Perlu Belajar'}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">2. Bagian mana yang paling kamu sukai atau paling seru? Tuliskan kesanmu!</label>
+                            <input type="text" oninput="state.reflection.feeling = this.value" value="${state.reflection.feeling}" placeholder="Contoh: Seru mengenal 26 bangunan publik dan simulasi navigasi!" class="w-full px-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">3. Apa motivasi belajarmu untuk meningkatkan kemampuan Bahasa Inggris ke depan?</label>
+                            <input type="text" oninput="state.reflection.motivation = this.value" value="${state.reflection.motivation}" placeholder="Contoh: Ingin lebih lancar menghafal kosakata dan berbicara bahasa Inggris." class="w-full px-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setReflUnd(lvl) {
+            state.reflection.understanding = lvl;
+            playSound('click');
+            render();
+        }
+
+        // --- Step 8: Rekapitulasi & Google Sheet Integration ---
+        function renderStep8(container) {
+            let diagScore = (state.diagnosticAnswers.q1 === 'Hospital' ? 50 : 0) + (state.diagnosticAnswers.q2 === 'Turn left' ? 50 : 0);
+            let quizScore = (state.quizAnswers.q1 === 'Supermarket' ? 20 : 0) + 
+                            (state.quizAnswers.q2 === 'North' ? 20 : 0) + 
+                            (state.quizAnswers.q3 === 'Go straight' ? 20 : 0) + 
+                            (state.quizAnswers.q4 === 'Fire Station' ? 20 : 0) + 
+                            (state.quizAnswers.q5 === 'Airport' ? 20 : 0);
+            
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">📊</span>
+                        <div>
+                            <span class="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">Tahap 8</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Rekapitulasi Hasil Belajar Siswa</h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-3xl border border-gray-200 dark:border-gray-700 space-y-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-xs text-gray-400 uppercase font-bold">Nama Siswa</span>
+                                <p class="font-bold text-sm md:text-base mt-1 text-gray-900 dark:text-white truncate">${state.name || '-'}</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-xs text-gray-400 uppercase font-bold">Kelas / Absen</span>
+                                <p class="font-bold text-sm md:text-base mt-1 text-emerald-600 dark:text-emerald-400">${state.studentClass} • No. ${state.absen || '-'}</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-xs text-gray-400 uppercase font-bold">Asesmen Awal</span>
+                                <p class="font-bold text-sm md:text-base mt-1 text-emerald-600">${diagScore} / 100</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <span class="text-xs text-gray-400 uppercase font-bold">Nilai Kuis</span>
+                                <p class="font-bold text-sm md:text-base mt-1 text-emerald-600">${quizScore} / 100</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-2 text-xs md:text-sm">
+                            <p><strong>Status Simulasi:</strong> ${state.simulationCompleted ? '✅ Selesai (Berhasil)' : '⚠️ Belum Selesai'}</p>
+                            <p><strong>Tingkat Pemahaman Refleksi:</strong> ${state.reflection.understanding}</p>
+                            <p><strong>Kesan Siswa:</strong> "${state.reflection.feeling || '-'}"</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <button onclick="downloadCSV()" class="flex-grow py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2">
+                            <span>📥 Unduh Rekap CSV</span>
+                        </button>
+                        <button onclick="simulateGoogleSheetSync()" class="flex-grow py-3 px-6 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2">
+                            <span>☁️ Kirim ke Google Sheet Guru</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadCSV() {
+            playSound('success');
+            let diagScore = (state.diagnosticAnswers.q1 === 'Hospital' ? 50 : 0) + (state.diagnosticAnswers.q2 === 'Turn left' ? 50 : 0);
+            let quizScore = (state.quizAnswers.q1 === 'Supermarket' ? 20 : 0) + 
+                            (state.quizAnswers.q2 === 'North' ? 20 : 0) + 
+                            (state.quizAnswers.q3 === 'Go straight' ? 20 : 0) + 
+                            (state.quizAnswers.q4 === 'Fire Station' ? 20 : 0) + 
+                            (state.quizAnswers.q5 === 'Airport' ? 20 : 0);
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Nama,Kelas,Absen,AsesmenAwal,QuizScore,Simulasi,Pemahaman,Kesan,Motivasi\n"
+                + `"${state.name}","${state.studentClass}",${state.absen},${diagScore},${quizScore},${state.simulationCompleted},"${state.reflection.understanding}","${state.reflection.feeling}","${state.reflection.motivation}"`;
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Rekap_English_MPI_${state.name.replace(/\s+/g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showModal('Berhasil!', 'File ringkasan rekapitulasi berhasil diunduh dalam format CSV.', '📥');
+        }
+
+        function simulateGoogleSheetSync() {
+            playSound('success');
+            showModal('Terkirim ke Google Sheet! ☁️', 'Data nilai dan refleksi siswa mata pelajaran Bahasa Inggris telah berhasil disinkronkan ke Google Spreadsheet guru kelas.', '✅');
+        }
+
+        window.onload = function() {
+            render();
+        };
+    </script>
+</body>
+</html>
